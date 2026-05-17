@@ -613,7 +613,967 @@
             font-size: 1rem;
             line-height: 1.6;
         }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanwal Farooq - Projects Section</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #00d4ff;
+    --secondary: #ff6b35;
+    --accent: #7c3aed;
+    --bg-dark: #030712;
+    --bg-card: #0d1117;
+    --bg-card2: #161b22;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --glow: 0 0 20px rgba(0, 212, 255, 0.4);
+    --glow-orange: 0 0 20px rgba(255, 107, 53, 0.4);
+  }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .projects-section {
+    padding: 100px 20px;
+    background: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .projects-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Animated grid background */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 30px;
+    padding: 6px 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin-bottom: 60px;
+    line-height: 1.7;
+  }
+
+  /* ===== FILTER TABS ===== */
+  .filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 50px;
+  }
+
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 25px;
+    border: 1px solid rgba(0,212,255,0.2);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(0,212,255,0.15);
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: var(--glow);
+  }
+
+  /* ===== PROJECTS GRID ===== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 30px;
+    perspective: 1200px;
+  }
+
+  /* ===== 3D FLIP CARD ===== */
+  .project-card {
+    height: 420px;
+    perspective: 1200px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .project-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .project-card:hover .card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* FRONT SIDE */
+  .card-front {
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-front-header {
+    padding: 28px 28px 20px;
+    position: relative;
+    flex: 1;
+  }
+
+  .card-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-number {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+  }
+
+  .card-category {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .card-front-footer {
+    padding: 16px 28px 22px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .flip-hint {
+    position: absolute;
+    bottom: 22px;
+    right: 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .flip-hint svg {
+    width: 14px;
+    height: 14px;
+    animation: spinHint 3s infinite;
+  }
+
+  @keyframes spinHint {
+    0%, 70% { transform: rotateY(0deg); }
+    85% { transform: rotateY(180deg); }
+    100% { transform: rotateY(0deg); }
+  }
+
+  /* BACK SIDE */
+  .card-back {
+    background: var(--bg-card2);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+  }
+
+  .back-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .back-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .back-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+
+  .back-sections { flex: 1; overflow: hidden; }
+
+  .back-section {
+    margin-bottom: 14px;
+  }
+
+  .back-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .back-section-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  .impact-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.1);
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .linkedin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0,119,181,0.3), rgba(0,119,181,0.1));
+    border: 1px solid rgba(0,119,181,0.4);
+    color: #5cb8e4;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .linkedin-btn:hover {
+    background: rgba(0,119,181,0.4);
+    border-color: rgba(0,119,181,0.7);
+    box-shadow: 0 0 15px rgba(0,119,181,0.3);
+    transform: translateY(-1px);
+  }
+
+  /* ===== COLOR THEMES ===== */
+  .theme-cyan .card-icon-wrap { background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.2); }
+  .theme-cyan .card-category { background: rgba(0,212,255,0.1); color: var(--primary); border: 1px solid rgba(0,212,255,0.2); }
+  .theme-cyan .back-icon { background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.2); }
+  .theme-cyan .back-section-label { color: var(--primary); }
+  .theme-cyan .impact-stat { border-color: rgba(0,212,255,0.2); color: var(--primary); }
+  .theme-cyan::after { border-top-color: rgba(0,212,255,0.6); }
+
+  .theme-orange .card-icon-wrap { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.2); }
+  .theme-orange .card-category { background: rgba(255,107,53,0.1); color: var(--secondary); border: 1px solid rgba(255,107,53,0.2); }
+  .theme-orange .back-icon { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.2); }
+  .theme-orange .back-section-label { color: var(--secondary); }
+  .theme-orange .impact-stat { border-color: rgba(255,107,53,0.2); color: var(--secondary); background: rgba(255,107,53,0.05); }
+
+  .theme-purple .card-icon-wrap { background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.2); }
+  .theme-purple .card-category { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .theme-purple .back-icon { background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.2); }
+  .theme-purple .back-section-label { color: #a78bfa; }
+  .theme-purple .impact-stat { border-color: rgba(124,58,237,0.2); color: #a78bfa; background: rgba(124,58,237,0.05); }
+
+  .theme-green .card-icon-wrap { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.2); }
+  .theme-green .card-category { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+  .theme-green .back-icon { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.2); }
+  .theme-green .back-section-label { color: #34d399; }
+  .theme-green .impact-stat { border-color: rgba(16,185,129,0.2); color: #34d399; background: rgba(16,185,129,0.05); }
+
+  .theme-pink .card-icon-wrap { background: rgba(236,72,153,0.12); border: 1px solid rgba(236,72,153,0.2); }
+  .theme-pink .card-category { background: rgba(236,72,153,0.1); color: #f472b6; border: 1px solid rgba(236,72,153,0.2); }
+  .theme-pink .back-icon { background: rgba(236,72,153,0.12); border: 1px solid rgba(236,72,153,0.2); }
+  .theme-pink .back-section-label { color: #f472b6; }
+  .theme-pink .impact-stat { border-color: rgba(236,72,153,0.2); color: #f472b6; background: rgba(236,72,153,0.05); }
+
+  .theme-yellow .card-icon-wrap { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2); }
+  .theme-yellow .card-category { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+  .theme-yellow .back-icon { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2); }
+  .theme-yellow .back-section-label { color: #fbbf24; }
+  .theme-yellow .impact-stat { border-color: rgba(245,158,11,0.2); color: #fbbf24; background: rgba(245,158,11,0.05); }
+
+  /* Colored top border accent */
+  .project-card .card-front::before,
+  .project-card .card-back::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .theme-cyan .card-front::before,
+  .theme-cyan .card-back::before { background: linear-gradient(90deg, var(--primary), transparent); }
+  .theme-orange .card-front::before,
+  .theme-orange .card-back::before { background: linear-gradient(90deg, var(--secondary), transparent); }
+  .theme-purple .card-front::before,
+  .theme-purple .card-back::before { background: linear-gradient(90deg, #7c3aed, transparent); }
+  .theme-green .card-front::before,
+  .theme-green .card-back::before { background: linear-gradient(90deg, #10b981, transparent); }
+  .theme-pink .card-front::before,
+  .theme-pink .card-back::before { background: linear-gradient(90deg, #ec4899, transparent); }
+  .theme-yellow .card-front::before,
+  .theme-yellow .card-back::before { background: linear-gradient(90deg, #f59e0b, transparent); }
+
+  /* ===== HOVER GLOW ===== */
+  .project-card:hover .card-front,
+  .project-card:hover .card-back {
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+  }
+
+  .theme-cyan:hover .card-front { box-shadow: 0 0 40px rgba(0,212,255,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+  .theme-orange:hover .card-front { box-shadow: 0 0 40px rgba(255,107,53,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+  .theme-purple:hover .card-front { box-shadow: 0 0 40px rgba(124,58,237,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+  .theme-green:hover .card-front { box-shadow: 0 0 40px rgba(16,185,129,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+  .theme-pink:hover .card-front { box-shadow: 0 0 40px rgba(236,72,153,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+  .theme-yellow:hover .card-front { box-shadow: 0 0 40px rgba(245,158,11,0.15), 0 25px 50px rgba(0,0,0,0.4) !important; }
+
+  /* ===== STATS ROW ===== */
+  .projects-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 50px;
+    padding: 30px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+    .project-card { height: 400px; }
+    .projects-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="projects-section" id="projects">
+  <div class="grid-bg"></div>
+  <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;">
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div class="section-tag" style="margin: 0 auto 20px;">Portfolio</div>
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-subtitle" style="margin: 0 auto 40px;">
+        A showcase of real-world problem solving — from AI-powered fire risk systems to financial modeling and aviation safety.
+        <span style="color: var(--primary);"> Hover any card to explore details.</span>
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="projects-stats">
+      <div class="stat-item">
+        <span class="stat-number">8+</span>
+        <span class="stat-label">Live Projects</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">5</span>
+        <span class="stat-label">Domains</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">3</span>
+        <span class="stat-label">AI Systems</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100%</span>
+        <span class="stat-label">Real World Impact</span>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <button class="filter-btn active" onclick="filterCards('all', this)">All Projects</button>
+      <button class="filter-btn" onclick="filterCards('ai', this)">AI & ML</button>
+      <button class="filter-btn" onclick="filterCards('aviation', this)">Aviation</button>
+      <button class="filter-btn" onclick="filterCards('finance', this)">Finance</button>
+      <button class="filter-btn" onclick="filterCards('research', this)">Research</button>
+    </div>
+
+    <!-- PROJECTS GRID -->
+    <div class="projects-grid" id="projectsGrid">
+
+      <!-- CARD 1: Fire Risk Management -->
+      <div class="project-card theme-orange" data-category="ai aviation">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">01</span>
+              <div class="card-icon-wrap">🔥</div>
+              <span class="card-category">AI · Aviation Safety</span>
+              <h3 class="card-title">Quantitative AI Fire Risk Management</h3>
+              <p class="card-desc">AI-driven fire risk assessment system for aviation environments using quantitative modeling and predictive analytics for proactive safety management.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">Python</span>
+              <span class="tag">AI Risk Model</span>
+              <span class="tag">Aviation SMS</span>
+            </div>
+          </div>
+          <div class="card-back theme-orange">
+            <div class="back-header">
+              <div class="back-icon">🔥</div>
+              <div class="back-title">Quantitative AI Fire Risk Management</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#ff6b35;">Problem</div>
+                <div class="back-section-text">Aviation facilities face unpredictable fire hazards requiring real-time risk quantification and automated response protocols.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#ff6b35;">Solution</div>
+                <div class="back-section-text">Built an AI-based quantitative model that continuously scores fire risk factors and generates automated safety recommendations.</div>
+              </div>
+              <div class="impact-stat">🎯 Proactive fire safety using AI risk scoring</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_quantitative-ai-fire-risk-management-and-activity-7422326407835447296-8jcC" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: PPL Stock Geometric Brownian Motion -->
+      <div class="project-card theme-cyan" data-category="finance ai">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">02</span>
+              <div class="card-icon-wrap">📈</div>
+              <span class="card-category">Finance · Stochastic</span>
+              <h3 class="card-title">PPL Stock Randomness — Geometric Brownian Motion</h3>
+              <p class="card-desc">Analyzed randomness in PPL (Pakistan Petroleum Ltd) stock using Geometric Brownian Motion to test market efficiency and price behavior.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">Python</span>
+              <span class="tag">GBM Model</span>
+              <span class="tag">Stochastic Calc</span>
+            </div>
+          </div>
+          <div class="card-back theme-cyan">
+            <div class="back-header">
+              <div class="back-icon">📈</div>
+              <div class="back-title">PPL Stock Randomness via GBM</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#00d4ff;">Problem</div>
+                <div class="back-section-text">Investors need statistical evidence of market randomness in PSX-listed stocks to make informed quantitative trading decisions.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#00d4ff;">Solution</div>
+                <div class="back-section-text">Applied Geometric Brownian Motion with drift and diffusion parameters to model and test randomness in PPL stock price series.</div>
+              </div>
+              <div class="impact-stat">📊 Statistical randomness quantified for PSX market</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_check-randomness-in-ppl-stock-using-geometric-activity-7422328334681948160-vBu_" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Object Detection OpenCV -->
+      <div class="project-card theme-purple" data-category="ai">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">03</span>
+              <div class="card-icon-wrap">👁️</div>
+              <span class="card-category">Computer Vision · AI</span>
+              <h3 class="card-title">Object Detection in OpenCV — Functional Programming</h3>
+              <p class="card-desc">Real-time object detection system built using OpenCV with a functional programming paradigm — clean, modular, and efficient.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">OpenCV</span>
+              <span class="tag">Python</span>
+              <span class="tag">Functional OOP</span>
+            </div>
+          </div>
+          <div class="card-back theme-purple">
+            <div class="back-header">
+              <div class="back-icon">👁️</div>
+              <div class="back-title">Object Detection — OpenCV Functional</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#a78bfa;">Problem</div>
+                <div class="back-section-text">Industrial and safety systems need lightweight, real-time object detection without heavy deep-learning infrastructure.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#a78bfa;">Solution</div>
+                <div class="back-section-text">Implemented a functional-paradigm OpenCV pipeline for object detection — modular functions, composable pipelines, minimal overhead.</div>
+              </div>
+              <div class="impact-stat">🎯 Real-time detection with lightweight architecture</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_object-detection-in-opencv-using-funcational-activity-7422331259277828096-a-7g" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4: Transportation Problem -->
+      <div class="project-card theme-green" data-category="finance ai">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">04</span>
+              <div class="card-icon-wrap">🚛</div>
+              <span class="card-category">Operations Research</span>
+              <h3 class="card-title">Transportation Problem — LPP Solution</h3>
+              <p class="card-desc">Solved a real-world transportation and logistics optimization problem using Linear Programming — minimizing cost while satisfying all supply and demand constraints.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">LPP</span>
+              <span class="tag">Python</span>
+              <span class="tag">Optimization</span>
+            </div>
+          </div>
+          <div class="card-back theme-green">
+            <div class="back-header">
+              <div class="back-icon">🚛</div>
+              <div class="back-title">Transportation Problem — LPP</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#34d399;">Problem</div>
+                <div class="back-section-text">Businesses lose significant revenue due to inefficient supply chain routing and non-optimal allocation of goods across distribution networks.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#34d399;">Solution</div>
+                <div class="back-section-text">Modeled the transportation challenge as a Linear Programming Problem and solved it using the simplex method and Python optimization libraries.</div>
+              </div>
+              <div class="impact-stat">💰 Significant cost reduction via optimal routing</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_transportation-problem-solution-that-facing-activity-7422333640098914304-eini" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 5: Solo Aerodrome Firefighter -->
+      <div class="project-card theme-orange" data-category="aviation">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">05</span>
+              <div class="card-icon-wrap">🚒</div>
+              <span class="card-category">Aviation · Achievement</span>
+              <h3 class="card-title">Solo Aerodrome Firefighter — Field Achievement</h3>
+              <p class="card-desc">A proud milestone: successfully performed as a solo aerodrome firefighter in a live airport environment — combining theoretical knowledge with hands-on emergency response.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">ARFF</span>
+              <span class="tag">Aviation Safety</span>
+              <span class="tag">Emergency Response</span>
+            </div>
+          </div>
+          <div class="card-back theme-orange">
+            <div class="back-header">
+              <div class="back-icon">🚒</div>
+              <div class="back-title">Solo Aerodrome Firefighter</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#ff6b35;">Achievement</div>
+                <div class="back-section-text">Executed solo aerodrome fire fighting duties in a real airport setting — a rare, high-stakes achievement demonstrating advanced aviation safety competency.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#ff6b35;">Significance</div>
+                <div class="back-section-text">Demonstrated command of ICAO/NFPA emergency standards, aircraft rescue procedures, and hazardous materials handling in live operations.</div>
+              </div>
+              <div class="impact-stat">🏅 Certified solo field aviation fire response</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_proud-moment-for-being-solo-aerodrome-firefighterin-activity-7422335467473379329-dxCF" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 6: Traditional Insurance Contracts -->
+      <div class="project-card theme-cyan" data-category="finance research">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">06</span>
+              <div class="card-icon-wrap">📋</div>
+              <span class="card-category">Finance · Risk</span>
+              <h3 class="card-title">Traditional Insurance Contracts — Risk Analysis</h3>
+              <p class="card-desc">In-depth analysis of traditional insurance contract structures, their risk implications, actuarial assumptions, and comparison with modern risk-transfer mechanisms.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">Actuarial</span>
+              <span class="tag">Risk Modeling</span>
+              <span class="tag">Financial Math</span>
+            </div>
+          </div>
+          <div class="card-back theme-cyan">
+            <div class="back-header">
+              <div class="back-icon">📋</div>
+              <div class="back-title">Traditional Insurance Contracts</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#00d4ff;">Focus</div>
+                <div class="back-section-text">Examined traditional insurance contract frameworks, moral hazard, adverse selection, and premium pricing using mathematical risk models.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#00d4ff;">Outcome</div>
+                <div class="back-section-text">Identified structural gaps in conventional contracts and proposed quantitative improvements grounded in financial mathematics theory.</div>
+              </div>
+              <div class="impact-stat">📐 Quantitative framework for contract risk assessment</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_traditional-insurance-contracts-traditional-activity-7428347689047670784-tWg6" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 7: Prevention is Better Than Cure Lecture -->
+      <div class="project-card theme-pink" data-category="aviation research">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">07</span>
+              <div class="card-icon-wrap">🎓</div>
+              <span class="card-category">Aviation · Education</span>
+              <h3 class="card-title">Prevention is Better Than Cure — Safety Lecture</h3>
+              <p class="card-desc">Delivered a professional safety lecture on proactive risk prevention in aviation — bridging academic knowledge with operational safety culture.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">Safety Management</span>
+              <span class="tag">SMS</span>
+              <span class="tag">Aviation</span>
+            </div>
+          </div>
+          <div class="card-back theme-pink">
+            <div class="back-header">
+              <div class="back-icon">🎓</div>
+              <div class="back-title">Prevention is Better Than Cure</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#f472b6;">Topic</div>
+                <div class="back-section-text">Delivered a structured aviation safety lecture focusing on proactive hazard identification, near-miss reporting culture, and SMS implementation principles.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#f472b6;">Impact</div>
+                <div class="back-section-text">Promoted a "prevention-first" mindset among aviation personnel, emphasizing that reactive safety systems are inherently insufficient.</div>
+              </div>
+              <div class="impact-stat">✈️ Advancing proactive safety culture in aviation</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_prevention-is-better-than-cure-lecture-delivered-activity-7433455210640998400-WeYo" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 8: Fresh Bread for Multani People -->
+      <div class="project-card theme-yellow" data-category="research">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-front-header">
+              <span class="card-number">08</span>
+              <div class="card-icon-wrap">🍞</div>
+              <span class="card-category">Research · Heritage</span>
+              <h3 class="card-title">Fresh Bread for Multani People — Historical Food Research</h3>
+              <p class="card-desc">An insightful research exploration into the cultural, historical, and economic significance of traditional bread-making in Multan — connecting food heritage with socioeconomic patterns.</p>
+              <div class="flip-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Hover to flip
+              </div>
+            </div>
+            <div class="card-front-footer">
+              <span class="tag">Cultural Research</span>
+              <span class="tag">History</span>
+              <span class="tag">Economics</span>
+            </div>
+          </div>
+          <div class="card-back theme-yellow">
+            <div class="back-header">
+              <div class="back-icon">🍞</div>
+              <div class="back-title">Fresh Bread & Multani Heritage</div>
+            </div>
+            <div class="back-sections">
+              <div class="back-section">
+                <div class="back-section-label" style="color:#fbbf24;">Research</div>
+                <div class="back-section-text">Investigated the deep-rooted bread-making traditions of Multan, exploring their historical origins and the socioeconomic role of local tandoor culture.</div>
+              </div>
+              <div class="back-section">
+                <div class="back-section-label" style="color:#fbbf24;">Significance</div>
+                <div class="back-section-text">Highlighted the intersection of food history, local economy, and cultural identity — documenting knowledge that risks being lost to modernization.</div>
+              </div>
+              <div class="impact-stat">🏛️ Preserving Multani cultural & food heritage</div>
+            </div>
+            <a href="https://www.linkedin.com/posts/sanwal-farooq-3a92b1179_fresh-bread-for-multani-people-with-history-activity-7457418157998096384-9UJM" target="_blank" class="linkedin-btn">
+              🔗 View on LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div>
+</section>
+
+<script>
+  // Intersection Observer for scroll-in animation
+  const cards = document.querySelectorAll('.project-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80 * Array.from(cards).indexOf(entry.target));
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(card => observer.observe(card));
+
+  // Filter function
+  function filterCards(category, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    cards.forEach(card => {
+      const cats = card.dataset.category || '';
+      if (category === 'all' || cats.includes(category)) {
+        card.style.display = '';
+        setTimeout(() => card.classList.add('visible'), 50);
+      } else {
+        card.classList.remove('visible');
+        setTimeout(() => card.style.display = 'none', 400);
+      }
+    });
+  }
+
+  // Touch support for mobile flip
+  cards.forEach(card => {
+    card.addEventListener('touchstart', (e) => {
+      const inner = card.querySelector('.card-inner');
+      if (inner.style.transform === 'rotateY(180deg)') {
+        inner.style.transform = '';
+      } else {
+        inner.style.transform = 'rotateY(180deg)';
+      }
+    });
+  });
+</script>
+</body>
+</html>
         /* Contact Section */
         .contact-wrapper {
             max-width: 1200px;
